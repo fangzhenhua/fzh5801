@@ -1,0 +1,63 @@
+#include <iostream>
+#include<cstring> 
+#include<fstream>
+using namespace std;
+struct Sto{      //  存储查询单词信息 
+	int num;
+	char s[25];
+};
+
+int Delimit(char de)    //分隔符 判断 
+{
+	bool j1=(de==' ');
+	bool j2=(de==',');
+	bool j3=(de=='.');
+	bool j4=(de=='!');
+	bool j5=(de=='?');
+	bool j6=(de=='"');
+	bool j7=(de==';');
+	bool j8=(de==':');
+	if(j1||j2||j3||j4||j5||j6||j7||j8)
+	return 0;
+	else return 1;	
+} 
+int main() {
+	char filename[70];
+	cout<<"输入文件路径（该文件中第一个字符须为空格）：";
+	cin>>filename;
+	ifstream infile(filename);
+	if (!infile){
+		cout << "~路径错误~ ";
+		exit(1);
+	}
+	else{
+		Sto test;
+		test.num = 0;
+		cout << "输入查询单词：";
+		cin >> test.s;
+		int len = strlen(test.s);
+		char *sen;
+		sen = new char[len+1];
+		while (infile){
+			infile >> noskipws>>sen[0];
+			if (sen[0] == ' ')
+			{
+				for (int i = 1; i <= len+1; i++)         //单词判定 
+				{
+					infile >> sen[i];
+					if(sen[i]>='A'&&sen[i]<='Z')
+					sen[i]=sen[i]+32;
+					if (i == len+1)
+					{
+						if (!Delimit(sen[i]))
+							test.num++;
+					}
+					if (sen[i] != test.s[i-1])break;
+				}
+			}
+		}
+		cout << test.s << ": " << test.num << endl;
+		delete []sen;
+	}
+	infile.close();
+	}
